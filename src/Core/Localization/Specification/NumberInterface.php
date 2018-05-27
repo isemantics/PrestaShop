@@ -27,7 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Localization\Specification;
 
 /**
- * Number specification class
+ * Number specification interface
  *
  * Regroups rules and data used when formatting a decimal number in a given locale and a given numbering system
  * (latin, arab, ...).
@@ -46,7 +46,8 @@ interface NumberInterface
     /**
      * Get the specified symbols list for a given numbering system
      *
-     * @param $numberingSystem
+     * @param string $numberingSystem
+     *  Numbering system to use when formatting numbers. @see http://cldr.unicode.org/translation/numbering-systems
      *
      * @return NumberSymbolList
      */

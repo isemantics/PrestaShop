@@ -31,7 +31,7 @@ Finally, the ZIP file contains resources for developers and designers that are n
 Server configuration
 --------
 
-To install PrestaShop 1.7, you need a web server running PHP 5.4+ and any flavor of MySQL 5.0+ (MySQL, MariaDB, Percona Server, etc.).
+To install PrestaShop 1.7, you need a web server running PHP 5.6+ and any flavor of MySQL 5.0+ (MySQL, MariaDB, Percona Server, etc.).
 
 You will also need a database administration tool, such as phpMyAdmin, in order to create a database for PrestaShop.
 We recommend the Apache or Nginx web servers (check out our [example Nginx configuration file][21]).
@@ -70,6 +70,9 @@ Then reach your shop with the URL http://localhost:8001
 
 It will bind your ports 8001 to the web server. If you want to use other ports, open and modify the file `docker-compose.yml`.
 MySQL credentials can also be found and modified in this file if needed.
+
+**Note:**  Before auto-installing PrestaShop, this container checks the file *config/settings.inc.php* does not exist on startup.
+If you expect the container to (re)install your shop, remove this file if it exists.
 
 User documentation
 --------
@@ -134,7 +137,7 @@ You can discuss about e-commerce, help other merchants and get help, and contrib
 Getting support
 --------
 
-If you need help using PrestaShop 1.7, ask on the forums: https://www.prestashop.com/forums/forum/273-170x-in-development/
+If you need help using PrestaShop 1.7, ask on the forums: https://www.prestashop.com/forums/forum/273-172x-current/
 
 
 Thank you for downloading and using the PrestaShop Open Source e-commerce solution!
@@ -147,8 +150,8 @@ Thank you for downloading and using the PrestaShop Open Source e-commerce soluti
 [6]: CONTRIBUTING.md
 [7]: http://doc.prestashop.com/display/PS16/Contributing+to+PrestaShop
 [8]: https://crowdin.net/project/prestashop-official
-[9]: http://developers.prestashop.com/
-[10]: http://developers.prestashop.com/
+[9]: https://developers.prestashop.com/
+[10]: https://developers.prestashop.com/
 [11]: http://doc.prestashop.com/display/PS17/Getting+Started
 [12]: http://doc.prestashop.com/display/PS17/User+Guide
 [13]: http://doc.prestashop.com/display/PS17/Updating+PrestaShop

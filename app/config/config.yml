@@ -53,11 +53,12 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     form_themes:
-        - 'PrestaShopBundle:Admin/TwigTemplateForm:bootstrap_3_horizontal_layout.html.twig'
+        - 'PrestaShopBundle:Admin/TwigTemplateForm:bootstrap_4_horizontal_layout.html.twig'
     paths:
         '%admin_page%/Product': Product
         '%admin_page%/TwigTemplateForm': Twig
         '%admin_page%/Configure/AdvancedParameters': AdvancedParameters
+        '%admin_page%/Configure/ShopParameters': ShopParameters
     globals:
         webpack_server:   false
 

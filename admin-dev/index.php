@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2017 PrestaShop
+ * 2007-2018 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2017 PrestaShop SA
+ * @copyright 2007-2018 PrestaShop SA
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -60,10 +60,6 @@ if (!isset($_REQUEST['controller']) && isset($_REQUEST['tab'])) {
     $_REQUEST['controller'] = strtolower($_REQUEST['tab']);
 }
 
-// Prepare Symfony kernel to resolve route.
-if (PHP_VERSION_ID < 70000) {
-    $loader = require_once __DIR__.'/../var/bootstrap.php.cache';
-}
 // Enable APC for autoloading to improve performance.
 // You should change the ApcClassLoader first argument to a unique prefix
 // in order to prevent cache key conflicts with other applications

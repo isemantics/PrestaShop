@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2017 PrestaShop
+ * 2007-2018 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2017 PrestaShop SA
+ * @copyright 2007-2018 PrestaShop SA
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -27,6 +27,7 @@
 namespace PrestaShopBundle\Controller\Admin\Configure\AdvancedParameters;
 
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use PrestaShopBundle\Security\Voter\PageVoter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,6 +43,7 @@ class PerformanceController extends FrameworkBundleAdminController
 
     /**
      * @var FormInterface
+     * @Template("@PrestaShop/Admin/Configure/AdvancedParameters/performance.html.twig")
      * @return Response
      */
     public function indexAction(FormInterface $form = null)
@@ -54,9 +56,9 @@ class PerformanceController extends FrameworkBundleAdminController
 
         $form = is_null($form) ? $this->get('prestashop.adapter.performance.form_handler')->getForm() : $form;
 
-        $twigValues = array(
+        return array(
             'layoutHeaderToolbarBtn' => $toolbarButtons,
-            'layoutTitle' => $this->get('translator')->trans('Performance', array(), 'Admin.Navigation.Menu'),
+            'layoutTitle' => $this->trans('Performance', 'Admin.Navigation.Menu'),
             'requireAddonsSearch' => true,
             'requireBulkActions' => false,
             'showContentHeader' => true,
@@ -66,8 +68,6 @@ class PerformanceController extends FrameworkBundleAdminController
             'form' => $form->createView(),
             'servers' => $this->get('prestashop.adapter.memcache_server.manager')->getServers(),
         );
-
-        return $this->render('@AdvancedParameters/performance.html.twig', $twigValues);
     }
 
     /**

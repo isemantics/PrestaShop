@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2017 PrestaShop
+ * 2007-2018 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2017 PrestaShop SA
+ * @copyright 2007-2018 PrestaShop SA
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -132,10 +132,12 @@ class SpecificPriceCore extends ObjectModel
      */
     protected static $_no_specific_values = array();
 
+    protected static $psQtyDiscountOnCombination = null;
+
     /**
      * Flush local cache
      */
-    protected function flushCache()
+    public static function flushCache()
     {
         self::$_specificPriceCache = array();
         self::$_couldHaveSpecificPriceCache = array();
@@ -143,6 +145,7 @@ class SpecificPriceCore extends ObjectModel
         self::$_filterOutCache = array();
         self::$_cache_priorities = array();
         self::$_no_specific_values = array();
+        self::$psQtyDiscountOnCombination = null;
         Product::flushPriceCache();
     }
 
@@ -322,6 +325,7 @@ class SpecificPriceCore extends ObjectModel
             $ending = $now;
         }
         $id_customer = (int)$id_customer;
+        $id_cart = (int)$id_cart;
 
         $query_extra = '';
 
@@ -337,9 +341,7 @@ class SpecificPriceCore extends ObjectModel
             $query_extra .= self::filterOutField('id_product_attribute', $id_product_attribute);
         }
 
-        if ($id_cart !== null) {
-            $query_extra .= self::filterOutField('id_cart', $id_cart);
-        }
+        $query_extra .= self::filterOutField('id_cart', $id_cart);
 
         if ($ending == $now && $beginning == $now) {
             $key = __FUNCTION__.'-'.$first_date.'-'.$last_date;
@@ -487,9 +489,8 @@ class SpecificPriceCore extends ObjectModel
             return array();
         }
 
-        static $psQtyDiscountOnCombination = null;
-        if ($psQtyDiscountOnCombination === null) {
-            $psQtyDiscountOnCombination = Configuration::get('PS_QTY_DISCOUNT_ON_COMBINATION');
+        if (static::$psQtyDiscountOnCombination === null) {
+            static::$psQtyDiscountOnCombination = Configuration::get('PS_QTY_DISCOUNT_ON_COMBINATION');
             // no need to compute the key the first time the function is called, we know the cache has not
             // been computed yet
             $key = null;
@@ -535,7 +536,7 @@ class SpecificPriceCore extends ObjectModel
                 `id_group` '.self::formatIntInQuery(0, $id_group).' '.$query_extra.'
 				AND IF(`from_quantity` > 1, `from_quantity`, 0) <= ';
 
-            $query .= ($psQtyDiscountOnCombination || !$id_cart || !$real_quantity) ? (int)$quantity : max(1, (int)$real_quantity);
+            $query .= (static::$psQtyDiscountOnCombination || !$id_cart || !$real_quantity) ? (int)$quantity : max(1, (int)$real_quantity);
             $query .= ' ORDER BY `id_product_attribute` DESC, `id_cart` DESC, `from_quantity` DESC, `id_specific_price_rule` ASC, `score` DESC, `to` DESC, `from` DESC';
             self::$_specificPriceCache[$key] = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($query);
         }

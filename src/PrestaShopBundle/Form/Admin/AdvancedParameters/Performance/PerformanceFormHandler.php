@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2017 PrestaShop
+ * 2007-2018 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,29 +19,22 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2017 PrestaShop SA
+ * @copyright 2007-2018 PrestaShop SA
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
 namespace PrestaShopBundle\Form\Admin\AdvancedParameters\Performance;
 
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\CombineCompressCacheType;
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\OptionalFeaturesType;
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\MemcacheServerType;
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\MediaServersType;
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\DebugModeType;
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\CachingType;
-use PrestaShopBundle\Form\Admin\AdvancedParameters\Performance\SmartyType;
 use PrestaShop\PrestaShop\Core\Form\FormDataProviderInterface;
 use PrestaShop\PrestaShop\Adapter\Feature\CombinationFeature;
-use PrestaShop\PrestaShop\Core\Form\FormHandlerInterface;
+use PrestaShop\PrestaShop\Core\Form\AbstractFormHandler;
 use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * This class manages the data manipulated using forms
  * in "Configure > Advanced Parameters > Performance" page.
  */
-final class PerformanceFormHandler implements FormHandlerInterface
+final class PerformanceFormHandler extends AbstractFormHandler
 {
     /**
      * @var FormFactoryInterface
@@ -62,19 +55,18 @@ final class PerformanceFormHandler implements FormHandlerInterface
         FormFactoryInterface $formFactory,
         FormDataProviderInterface $formDataProvider,
         CombinationFeature $combinationFeature
-    )
-    {
+    ) {
         $this->formFactory = $formFactory;
         $this->combinationFeature = $combinationFeature;
         $this->formDataProvider = $formDataProvider;
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     public function getForm()
     {
-        return $this->formFactory->createBuilder()
+        $formBuilder = $this->formFactory->createBuilder()
             ->add('smarty', SmartyType::class)
             ->add('debug_mode', DebugModeType::class)
             ->add('optional_features', OptionalFeaturesType::class, array(
@@ -85,15 +77,24 @@ final class PerformanceFormHandler implements FormHandlerInterface
             ->add('caching', CachingType::class)
             ->add('add_memcache_server', MemcacheServerType::class)
             ->setData($this->formDataProvider->getData())
-            ->getForm()
         ;
+
+        $this->hookDispatcher->dispatchForParameters('displayPerformancePageForm', ['form_builder' => &$formBuilder]);
+
+        return $formBuilder->setData($formBuilder->getData())->getForm();
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     public function save(array $data)
     {
-        return $this->formDataProvider->setData($data);
+        $errors = $this->formDataProvider->setData($data);
+        $this->hookDispatcher->dispatchForParameters(
+            'actionPerformancePageFormSave',
+            ['errors' => &$errors, 'form_data' => &$data]
+        );
+
+        return $errors;
     }
 }
